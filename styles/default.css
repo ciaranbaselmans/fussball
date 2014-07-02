@@ -1,0 +1,24 @@
+/*CSS for ease-of-use only, it does in no way represent anything of any kind.. ever*/
+*{margin:0;}
+html{height:100%;}
+body{padding:0; margin:0; height:100%; font-family:Trebuchet MS, arial;}
+
+h1{font-family: 'Quantico', Trebuchet MS;margin: auto;color:#1b1d2e;font-size: 3em;text-transform:uppercase;text-align: center;}
+h2{font-weight: 300;margin: 6px auto;}
+h3{font-weight: 150; margin-left: 10px;}
+a{text-decoration: none; font-family:Trebuchet MS, arial; color:#00F;}
+
+.wrapper {padding: 30px;}
+
+select {width: 200px;}
+
+
+/*  Menu  */
+
+#menu{padding:0; margin:0 auto; height:37px; background:#1b1d2e;}
+#menu ul{padding:0; margin: auto; }
+#menu ul li{padding: 6px 0px 9px 0px;list-style:none;float:left;}
+#menu ul li a{padding: 6px 20px 9px 20px; margin:0; text-decoration:none; color:#d5d5d5;border-left:1px solid #424455; border-right:1px solid #000;}
+#menu ul li a:hover{background:#2e3149; color:#fff}
+
+.quicky {text-align: center;}
