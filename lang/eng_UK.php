@@ -20,11 +20,13 @@
 	$label['insertNewScores']['error_player_same'] = "Error: player 1 and 2 were the same";
 
 	$label['stats']['title'] = "Main Stats";
+	$label['stats']['AllTime_Player_ranking'] = "All Time Hall Of Fame";
 	$label['stats']['Player_ranking'] = "Player ranking";
 	$label['stats']['Rank'] = "#";
 	$label['stats']['Player'] = "Player";
 	$label['stats']['Played'] = "GP";
 	$label['stats']['Wins'] = "W";
+	$label['stats']['Win_Ratio'] = "W/GP";
 	$label['stats']['Draws'] = "D";
 	$label['stats']['Losses'] = "L";
 	$label['stats']['Goals_For'] = "GF";
@@ -34,6 +36,7 @@
 	$label['stats']['title_Player'] = "Player";
 	$label['stats']['title_Played'] = "Games Played";
 	$label['stats']['title_Wins'] = "Wins";
+	$label['stats']['title_Win_Ratio'] = "Win/Played %";
 	$label['stats']['title_Draws'] = "Draws";
 	$label['stats']['title_Losses'] = "Losses";
 	$label['stats']['title_Goals_For'] = "Goals For";

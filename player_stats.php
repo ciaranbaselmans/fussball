@@ -35,6 +35,7 @@
 		$stats[$player->getId()]["draws"] = array();
 		$stats[$player->getId()]["losses"] = array();
 		$stats[$player->getId()]["goalSum"] = array("for" => 0, "against" => 0);
+		$stats[$player->getId()]["winRatio"] = 0;
 		
 		if (sizeof($allOfThem) > 0) {
 	
@@ -73,6 +74,12 @@
 			$stats[$player->getId()]["draws"] = isset($draws)?$draws:array();
 			$stats[$player->getId()]["losses"] = isset($losses)?$losses:array();
 			$stats[$player->getId()]["goalSum"] = isset($goalSum)?$goalSum:array("for" => 0, "against" => 0);
+	
+			if ($stats[$player->getId()]['matches'] > 0) {
+				$stats[$player->getId()]["winRatio"] = (float)((float)sizeof($stats[$player->getId()]["wins"])/(float)sizeof($stats[$player->getId()]['matches']));
+				$stats[$player->getId()]["winRatio"] = 100* $stats[$player->getId()]["winRatio"];
+				$stats[$player->getId()]["winRatio"] = round($stats[$player->getId()]["winRatio"], 2);
+			}
 		}
 	}
 	
@@ -300,6 +307,7 @@
 								<tr>
 									<th title="<?php echo $label['stats']['title_Played'] ?>" ><?php echo $label['stats']['Played'] ?></td>
 									<th title="<?php echo $label['stats']['title_Wins'] ?>" ><?php echo $label['stats']['Wins'] ?></td>
+									<th title="<?php echo $label['stats']['title_Win_Ratio'] ?>" ><?php echo $label['stats']['Win_Ratio'] ?></td>
 									<th title="<?php echo $label['stats']['title_Draws'] ?>" ><?php echo $label['stats']['Draws'] ?></td>
 									<th title="<?php echo $label['stats']['title_Losses'] ?>" ><?php echo $label['stats']['Losses'] ?></td>
 									<th title="<?php echo $label['stats']['title_Goals_For'] ?>" ><?php echo $label['stats']['Goals_For'] ?></td>
@@ -311,6 +319,7 @@
 								<tr>
 								<td><?php echo sizeof($stats[$player->getId()]["matches"]) ?></td>
 								<td><?php echo sizeof($stats[$player->getId()]["wins"]) ?></td>
+								<td><?php echo number_format($stats[$player->getId()]["winRatio"],2) ?></td>
 								<td><?php echo sizeof($stats[$player->getId()]["draws"]) ?></td>
 								<td><?php echo sizeof($stats[$player->getId()]["losses"]) ?></td>
 								<td><?php echo $stats[$player->getId()]["goalSum"]['for'] ?></td>

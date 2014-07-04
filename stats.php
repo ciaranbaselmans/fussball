@@ -37,13 +37,14 @@
 			<br />
 			<br />
 			<div class="stats">
-				<h2><?php echo $label['stats']['Player_ranking'] ?></h2>
+				<h2><?php echo $label['stats']['AllTime_Player_ranking'] ?></h2>
 				<table id="Ranking" class="tablesorter">
 					<thead>
 						<tr>
 							<th title="<?php echo $label['stats']['title_Player'] ?>" ><?php echo $label['stats']['Player'] ?></td>
 							<th title="<?php echo $label['stats']['title_Played'] ?>" ><?php echo $label['stats']['Played'] ?></td>
 							<th title="<?php echo $label['stats']['title_Wins'] ?>" ><?php echo $label['stats']['Wins'] ?></td>
+							<th title="<?php echo $label['stats']['title_Win_Ratio'] ?>" ><?php echo $label['stats']['Win_Ratio'] ?></td>
 							<th title="<?php echo $label['stats']['title_Draws'] ?>" ><?php echo $label['stats']['Draws'] ?></td>
 							<th title="<?php echo $label['stats']['title_Losses'] ?>" ><?php echo $label['stats']['Losses'] ?></td>
 							<th title="<?php echo $label['stats']['title_Goals_For'] ?>" ><?php echo $label['stats']['Goals_For'] ?></td>
@@ -60,11 +61,19 @@
 		$played = sizeof($wins) + sizeof($draws) + sizeof($losses);
 		$allOfThem = $players[$i]->getAllPlayedMatches();
 		$goalSum = $players[$i]->getGoalSum($allOfThem);
+
+		$winRatio = 0;
+		if ($played > 0) {
+			$winRatio = (float)((float)sizeof($wins)/(float)$played);
+			$winRatio = 100* $winRatio;
+			$winRatio = round($winRatio, 2);
+		}
 ?>
 					<tr>
 						<td><a href="player_stats.php?id=<?php echo $players[$i]->getId() ?>"><?php echo $players[$i]->getName() ?></a></td>
 						<td><?php echo $played ?></td>
 						<td><?php echo sizeof($wins) ?></td>
+						<td><?php echo number_format($winRatio, 2) ?></td>
 						<td><?php echo sizeof($draws) ?></td>
 						<td><?php echo sizeof($losses) ?></td>
 						<td><?php echo $goalSum['for'] ?></td>
