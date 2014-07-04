@@ -41,7 +41,7 @@
 	<body>
 		<div class="wrapper">
 			<div id="menu">
-				<ul>
+				<ul><!-- test commit -->
 					<li><a href="index.php"><?php echo $label['menu']['Home'] ?></a></li>
 					<li><a href="stats.php"><?php echo $label['menu']['Stats'] ?></a></li>
 				</ul>
