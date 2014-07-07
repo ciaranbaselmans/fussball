@@ -21,7 +21,7 @@
 
 	$label['stats']['title'] = "Main Stats";
 	$label['stats']['AllTime_Player_ranking'] = "All Time Hall Of Fame";
-	$label['stats']['Player_ranking'] = "Player ranking";
+	$label['stats']['Player_ranking'] = "Current Player Ranking";
 	$label['stats']['Rank'] = "#";
 	$label['stats']['Player'] = "Player";
 	$label['stats']['Played'] = "GP";
