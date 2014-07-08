@@ -39,15 +39,11 @@
 			}
 		}
 		
-		public function getPlayedMatches($where) {
+		public function getPlayedMatches($where = NULL) {
 			$matches = array();
 			$i = 0;
 			if (isset($this->id) && $this->id != 0) {
-				if (isset($where)) {
-					$where = " AND ".$where;
-				} else {
-					$where = "";
-				}
+				$where = Player::where($where);
 				$DBconn = DBconnector::getConn();
 				$result = mysqli_query($DBconn, "SELECT * from Matches WHERE (player1_id = ".$this->id." OR player2_id = ".$this->id.")".$where." ORDER BY fixture ASC");
 				if (!empty($result)) {
@@ -62,36 +58,43 @@
 			return $matches;
 		}
 		
-		public function getAllPlayedMatches() {
-			return $this->getPlayedMatches(null);
+		public function getAllPlayedMatches($where = NULL) {
+			return $this->getPlayedMatches($where);
 		}
 		
-		public function getMatchesLost() {
-			return $this->getPlayedMatches(" winner != ".$this->id);
+		public function getMatchesLost($where = NULL) {
+			$where = Player::where($where);
+			return $this->getPlayedMatches(" winner != ".$this->id." ".$where);
 		}
 		
-		public function getMatchesDraw() {
-			return $this->getPlayedMatches(" winner = 0");
+		public function getMatchesDraw($where = NULL) {
+			$where = Player::where($where);
+			return $this->getPlayedMatches(" winner = 0"." ".$where);
 		}
 		
-		public function getMatchesWon() {
-			return $this->getPlayedMatches(" winner = ".$this->id);
+		public function getMatchesWon($where = NULL) {
+			$where = Player::where($where);
+			return $this->getPlayedMatches(" winner = ".$this->id." ".$where);
 		}
 		
-		public function getAllPlayedMatchesVs($player2) {
-			return $this->getPlayedMatches(" (player1_id = ".$player2->id." OR player2_id = ".$player2->id.")");
+		public function getAllPlayedMatchesVs($player2, $where = NULL) {
+			$where = Player::where($where);
+			return $this->getPlayedMatches(" (player1_id = ".$player2->id." OR player2_id = ".$player2->id.")"." ".$where);
 		}
 		
-		public function getMatchesLostVs($player2) {
-			return $this->getPlayedMatches(" (player1_id = ".$player2->id." OR player2_id = ".$player2->id.") AND winner != ".$this->id);
+		public function getMatchesLostVs($player2, $where = NULL) {
+			$where = Player::where($where);
+			return $this->getPlayedMatches(" (player1_id = ".$player2->id." OR player2_id = ".$player2->id.") AND winner != ".$this->id." ".$where);
 		}
 		
-		public function getMatchesDrawVs($player2) {
-			return $this->getPlayedMatches(" (player1_id = ".$player2->id." OR player2_id = ".$player2->id.") AND winner = 0");
+		public function getMatchesDrawVs($player2, $where = NULL) {
+			$where = Player::where($where);
+			return $this->getPlayedMatches(" (player1_id = ".$player2->id." OR player2_id = ".$player2->id.") AND winner = 0"." ".$where);
 		}
 		
-		public function getMatchesWonVs($player2) {
-			return $this->getPlayedMatches(" (player1_id = ".$player2->id." OR player2_id = ".$player2->id.") AND winner = ".$this->id);
+		public function getMatchesWonVs($player2, $where = NULL) {
+			$where = Player::where($where);
+			return $this->getPlayedMatches(" (player1_id = ".$player2->id." OR player2_id = ".$player2->id.") AND winner = ".$this->id." ".$where);
 		}
 		
 		public function getGoalSum($allmatches) {
@@ -125,6 +128,15 @@
 				}
 			}
 			return $players;
+		}
+		
+		public static function where($where = NULL) {
+			if (isset($where)) {
+				$where = " AND ".$where;
+			} else {
+				$where = "";
+			}
+			return $where;
 		}
 	}
 ?>

@@ -6,4 +6,5 @@
 	$dbConnection["password"]	= "lamaindedieu";
 	$dbConnection["dbName"]		= "fussball";
 	
+	$refTimeWindowWhereClause	= " `fixture` >= DATE_SUB(NOW(), INTERVAL 1 MONTH) ";
 ?>
