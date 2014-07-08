@@ -5,6 +5,13 @@
 	
 	$players = Player::getAllPlayers();
 	
+	$context_period = $_GET['period'];
+	
+	$where = NULL;
+	if ($context_period == "latest") {
+		$where = $refTimeWindowWhereClause;
+	}
+	
 	$context_player_id = $_GET['id'];
 	if (!isset($context_player_id)) {
 		die("Player Id missing");
@@ -25,9 +32,9 @@
 	
 	foreach ($players as $player) {
 		if ($player->getId()==$context_player_id) {
-			$allOfThem = $context_player->getAllPlayedMatches();
+			$allOfThem = $context_player->getAllPlayedMatches($where);
 		} else {
-			$allOfThem = $context_player->getAllPlayedMatchesVs($player);
+			$allOfThem = $context_player->getAllPlayedMatchesVs($player, $where);
 		}
 		$stats[$player->getId()]['matches'] = $allOfThem;
 
@@ -66,9 +73,9 @@
 			$stats[$player->getId()]["worststreak"] = $worststreak;
 			$stats[$player->getId()]["beststreak"] = $beststreak;
 			
-			$wins = $context_player->getMatchesWonVs($player);
-			$draws = $context_player->getMatchesDrawVs($player);
-			$losses = $context_player->getMatchesLostVs($player);
+			$wins = $context_player->getMatchesWonVs($player, $where);
+			$draws = $context_player->getMatchesDrawVs($player, $where);
+			$losses = $context_player->getMatchesLostVs($player, $where);
 			$goalSum = $context_player->getGoalSum($allOfThem);
 			$stats[$player->getId()]["wins"] = isset($wins)?$wins:array();
 			$stats[$player->getId()]["draws"] = isset($draws)?$draws:array();
@@ -274,20 +281,22 @@
 			<h1><?php echo $label['player_stats']['title']." - ".$context_player->getName() ?></h1>
 			<br />
 			<br />
-			<div class="stats">
+			<div class="player_stats">
 				<div id="vs">
-					<h3><?php echo $label['player_stats']['Showing_stats_against'] ?>:</h3>
-					<select id="player2" name="player2">
-						<option value ="<?php echo $context_player->getId() ?>" selected>All</option>
+					<div class="selection">
+						<h3><?php echo $label['player_stats']['Showing_stats_against'] ?>:</h3>
+						<select id="player2" name="player2">
+							<option value ="<?php echo $context_player->getId() ?>" selected>All</option>
 <?php 
 	foreach ($players as $player) {
 		if ($player->getId()==$context_player->getId()) continue;
 ?>
-						<option value ="<?php echo $player->getId() ?>"><?php echo $player->getName() ?></option>
+							<option value ="<?php echo $player->getId() ?>"><?php echo $player->getName() ?></option>
 <?php 
 	}
 ?>
-					</select>
+						</select>
+					</div>
 <?php 
 	foreach ($players as $player) {
 		if ($player->getId()==$context_player->getId()) {
@@ -297,64 +306,69 @@
 		}
 ?>				
 					<div id="stats_vs_player_<?php echo $player->getId() ?>">
-						<h2>Stats vs player <?php echo $name ?></h2>
-						<h3><?php echo $label['player_stats']['status'] ?></h3>
-<?php 
-
-?>
-						<table id="Ranking" class="tablesorter">
-							<thead>
-								<tr>
-									<th title="<?php echo $label['stats']['title_Played'] ?>" ><?php echo $label['stats']['Played'] ?></td>
-									<th title="<?php echo $label['stats']['title_Wins'] ?>" ><?php echo $label['stats']['Wins'] ?></td>
-									<th title="<?php echo $label['stats']['title_Win_Ratio'] ?>" ><?php echo $label['stats']['Win_Ratio'] ?></td>
-									<th title="<?php echo $label['stats']['title_Draws'] ?>" ><?php echo $label['stats']['Draws'] ?></td>
-									<th title="<?php echo $label['stats']['title_Losses'] ?>" ><?php echo $label['stats']['Losses'] ?></td>
-									<th title="<?php echo $label['stats']['title_Goals_For'] ?>" ><?php echo $label['stats']['Goals_For'] ?></td>
-									<th title="<?php echo $label['stats']['title_Goals_Against'] ?>" ><?php echo $label['stats']['Goals_Against'] ?></td>
-									<th title="<?php echo $label['stats']['title_Goals_Diff'] ?>" ><?php echo $label['stats']['Goals_Diff'] ?></td>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-								<td><?php echo sizeof($stats[$player->getId()]["matches"]) ?></td>
-								<td><?php echo sizeof($stats[$player->getId()]["wins"]) ?></td>
-								<td><?php echo number_format($stats[$player->getId()]["winRatio"],2) ?></td>
-								<td><?php echo sizeof($stats[$player->getId()]["draws"]) ?></td>
-								<td><?php echo sizeof($stats[$player->getId()]["losses"]) ?></td>
-								<td><?php echo $stats[$player->getId()]["goalSum"]['for'] ?></td>
-								<td><?php echo $stats[$player->getId()]["goalSum"]['against'] ?></td>
-								<td><?php echo $stats[$player->getId()]["goalSum"]['for']-$stats[$player->getId()]["goalSum"]['against'] ?></td>
-								</tr>
+						<div class="stats">
+							<h2>Stats vs player <?php echo $name ?></h2>
+							
+							<table id="Ranking" class="tablesorter">
+								<thead>
+									<tr>
+										<th title="<?php echo $label['stats']['title_Player'] ?>" ><?php echo $label['stats']['Player'] ?></td>
+										<th title="<?php echo $label['stats']['title_Played'] ?>" ><?php echo $label['stats']['Played'] ?></td>
+										<th title="<?php echo $label['stats']['title_Wins'] ?>" ><?php echo $label['stats']['Wins'] ?></td>
+										<th title="<?php echo $label['stats']['title_Win_Ratio'] ?>" ><?php echo $label['stats']['Win_Ratio'] ?></td>
+										<th title="<?php echo $label['stats']['title_Draws'] ?>" ><?php echo $label['stats']['Draws'] ?></td>
+										<th title="<?php echo $label['stats']['title_Losses'] ?>" ><?php echo $label['stats']['Losses'] ?></td>
+										<th title="<?php echo $label['stats']['title_Goals_For'] ?>" ><?php echo $label['stats']['Goals_For'] ?></td>
+										<th title="<?php echo $label['stats']['title_Goals_Against'] ?>" ><?php echo $label['stats']['Goals_Against'] ?></td>
+										<th title="<?php echo $label['stats']['title_Goals_Diff'] ?>" ><?php echo $label['stats']['Goals_Diff'] ?></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><?php echo $player->getName() ?></td>
+										<td><?php echo sizeof($stats[$player->getId()]["matches"]) ?></td>
+										<td><?php echo sizeof($stats[$player->getId()]["wins"]) ?></td>
+										<td><?php echo number_format($stats[$player->getId()]["winRatio"],2) ?></td>
+										<td><?php echo sizeof($stats[$player->getId()]["draws"]) ?></td>
+										<td><?php echo sizeof($stats[$player->getId()]["losses"]) ?></td>
+										<td><?php echo $stats[$player->getId()]["goalSum"]['for'] ?></td>
+										<td><?php echo $stats[$player->getId()]["goalSum"]['against'] ?></td>
+										<td><?php echo $stats[$player->getId()]["goalSum"]['for']-$stats[$player->getId()]["goalSum"]['against'] ?></td>
+									</tr>
 <?php 
 	//
 ?>
-							</tbody>
-						</table>
+								</tbody>
+							</table>
+						</div>
+						
+						<div class="stats">
 <?php 
 		if (sizeof($stats[$player->getId()]["matches"]) == 0) {
 ?>
-						<span><?php echo $label['player_stats']['Never_played'] ?></span><br />
+							<span><?php echo $label['player_stats']['Never_played'] ?></span><br />
 <?php 
 		} else {
 			if ($stats[$player->getId()]["matches"][sizeof($stats[$player->getId()]["matches"])-1]->getWinner() == $context_player_id) {
 ?>
-						<span><?php echo $label['player_stats']['Current_victory_streak'] ?>:</span>&nbsp;<?php echo $stats[$player->getId()]["currentVstreak"] ?><br />
+							<span><?php echo $label['player_stats']['Current_victory_streak'] ?>:</span>&nbsp;<?php echo $stats[$player->getId()]["currentVstreak"] ?><br />
 <?php 
 			} else {
 ?>
-						<span><?php echo $label['player_stats']['Current_defeat_streak'] ?>:</span>&nbsp;<?php echo $stats[$player->getId()]["currentDstreak"] ?><br />
+							<span><?php echo $label['player_stats']['Current_defeat_streak'] ?>:</span>&nbsp;<?php echo $stats[$player->getId()]["currentDstreak"] ?><br />
 <?php 
 			}
 ?>
-						<span><?php echo $label['player_stats']['Best_victory_streak'] ?>:</span>&nbsp;<?php echo $stats[$player->getId()]["beststreak"] ?><br />
-						<span><?php echo $label['player_stats']['Worst_defeat_streak'] ?>:</span>&nbsp;<?php echo $stats[$player->getId()]["worststreak"] ?><br />
-						<br />
-						<span><?php echo $label['player_stats']['Average_score_by']." ".$context_player->getName() ?>:</span>&nbsp;<?php echo round($stats[$player->getId()]["goalSum"]["for"] / count($stats[$player->getId()]["matches"]), 2) ?><br />
-						<span><?php echo $label['player_stats']['Average_score_by']." ".$name ?>:</span>&nbsp;<?php echo round($stats[$player->getId()]["goalSum"]["against"] / count($stats[$player->getId()]["matches"]), 2) ?><br />
+							<span><?php echo $label['player_stats']['Best_victory_streak'] ?>:</span>&nbsp;<?php echo $stats[$player->getId()]["beststreak"] ?><br />
+							<span><?php echo $label['player_stats']['Worst_defeat_streak'] ?>:</span>&nbsp;<?php echo $stats[$player->getId()]["worststreak"] ?><br />
+							<br />
+							<span><?php echo $label['player_stats']['Average_score_by']." ".$context_player->getName() ?>:</span>&nbsp;<?php echo round($stats[$player->getId()]["goalSum"]["for"] / count($stats[$player->getId()]["matches"]), 2) ?><br />
+							<span><?php echo $label['player_stats']['Average_score_by']." ".$name ?>:</span>&nbsp;<?php echo round($stats[$player->getId()]["goalSum"]["against"] / count($stats[$player->getId()]["matches"]), 2) ?><br />
 <?php 
 		}
 ?>
+						</div>
+						<div style="clear: left;"></div>
 						<div id="score_progress_<?php echo $player->getId(); ?>" class="jqplot jqplot-target">
 							
 						</div>
