@@ -24,6 +24,9 @@ select {width: 200px;}
 .quicky {text-align: center;}
 
 div.stats {float: left; margin: 20px; border: 5px solid #dddddd; padding: 10px; background-color: #ffffcc;}
+div.stats h2 {margin-bottom: 21px;}
+
+div.selection {margin: 30px; border: 5px solid #dddddd; padding: 10px; background-color: #ffffcc;}
 
 table {
   border-collapse: collapse;

@@ -62,7 +62,7 @@
 	for ($i=0;$i<sizeof($players); $i++) {
 ?>
 					<tr>
-						<td><a href="player_stats.php?id=<?php echo $players[$i]->getId() ?>"><?php echo $players[$i]->getName() ?></a></td>
+						<td><a href="player_stats.php?id=<?php echo $players[$i]->getId() ?>&period=latest"><?php echo $players[$i]->getName() ?></a></td>
 						<td><?php echo $currentRanking[$i]->gp ?></td>
 						<td><?php echo $currentRanking[$i]->w ?></td>
 						<td><?php echo $currentRanking[$i]->wpgp ?></td>
@@ -99,7 +99,7 @@
 	for ($i=0;$i<sizeof($players); $i++) {
 ?>
 					<tr>
-						<td><a href="player_stats.php?id=<?php echo $players[$i]->getId() ?>"><?php echo $players[$i]->getName() ?></a></td>
+						<td><a href="player_stats.php?id=<?php echo $players[$i]->getId() ?>&period=all"><?php echo $players[$i]->getName() ?></a></td>
 						<td><?php echo $hof[$i]->gp ?></td>
 						<td><?php echo $hof[$i]->w ?></td>
 						<td><?php echo $hof[$i]->wpgp ?></td>
